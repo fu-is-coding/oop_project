@@ -2,6 +2,8 @@ package com.example.src;
 import java.util.Random;
 import java.util.Comparator;
 import javafx.scene.image.*;
+import javafx.scene.text.Text;
+
 import java.net.URL;
 
 public class Card implements Comparable<Card>{
@@ -9,7 +11,8 @@ public class Card implements Comparable<Card>{
     private final String[] verbose_suit = {"Diamond", "Club", "Heart", "Spade"};
     private final String[] verbose_rank = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
     private final String[] suit_symbol = {"\u2662", "\u2663", "\u2661", "\u2660"};
-    private Image cardImage;
+    private String cardImage;
+    private Image cardRealImage;
     private static Card emptyCard = new Card(-1);
     // private static Image backImage = new Image("file:../img/back.png");
     private static Image backImage = new Image(Card.class.getResourceAsStream("/img/back.png"));
@@ -39,7 +42,7 @@ public class Card implements Comparable<Card>{
     }
 
     public String toString(){
-        return suit_symbol[suit]+verbose_rank[rank];
+        return this.verbose_suit[suit] + " " + this.verbose_rank[rank];
     }
 
     public static Card[] newDeck(){
@@ -81,18 +84,29 @@ public class Card implements Comparable<Card>{
         return emptyCard;
     }
 
-    public Image getImage(){
+    public String getImage(){
         // load card image only when needed
         if(cardImage == null)
-            cardImage = new Image(
+            cardImage = new String(
                 // ("file:../img/" + verbose_rank[rank]+ verbose_suit[suit] + ".png").toLowerCase());
-                Card.class.getResourceAsStream(("/img/" + verbose_rank[rank]+ verbose_suit[suit] + ".png").toLowerCase()));
+                toString());
         return cardImage;
     }
+
 
     public static Image getBackImage(){
         return backImage;
     }
+
+// In your Card class
+public String getCardText() {
+    String rankText = verbose_rank[this.rank - 1]; // Access rank from verbose_rank array
+
+    // Directly use the int value of suit as the index
+    String suitText = verbose_suit[this.suit]; 
+
+    return rankText + " of " + suitText; 
+}
 
 }
 
