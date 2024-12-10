@@ -46,7 +46,9 @@ public class Game extends Application{
         for(int i = 0; i < poolCardsImage.length; i++){
             if(i < poolCards.size()){
                 poolCardsImage[i].setCard(poolCards.get(i));
-                poolCardsImage[i].setCurrentPlayer(players[nextPlayer]);
+                if(players[nextPlayer] != null) {
+                    poolCardsImage[i].setUserData(players[nextPlayer]);
+                }                
                 poolCardsImage[i].setActive(true);
             }
             else{
@@ -94,13 +96,13 @@ public class Game extends Application{
         capturePane.getChildren().add(t);
 
         for(Card c: capture.getCaptureCards()){
-            ImageView iv = new ImageView();
-            iv.setFitWidth(20);
-            iv.setPreserveRatio(true);
+            Text iv = new Text();
+            // iv.setFitWidth(20);
+            // iv.setPreserveRatio(true);
             iv.setSmooth(true);
             iv.setCache(true);
 
-            iv.setImage(c.getImage());
+            iv.setText(c.getImage());
 
             capturePane.getChildren().add(iv);
         }
@@ -118,6 +120,7 @@ public class Game extends Application{
             }
         }
 
+        poolCards = new ArrayList<>();
         poolCardsImage = new CardPane[PLAYERCARD*4 + POOLCARD];
         for(int i = 0; i < poolCardsImage.length; i++){
             poolCardsImage[i] = new CardPane(60);
@@ -328,17 +331,19 @@ public class Game extends Application{
                 Card playedCard = currentPlayer.playChoosenCard();
                 if(playedCard != null){
                     // return
-                    if(playedCard != Card.getEmptyCard()){
-                        poolCards.add(playedCard);
-                        captureStatus.setText("Trailing");
-                    }
-                    // take
-                    else{
+                    System.out.println("X");
+                    if(playedCard == Card.getEmptyCard()){
                         Capture currentCapture = currentPlayer.getLatestCapture();
                         for(Card c: currentCapture.getCaptureCards())
                             poolCards.remove(c);
                         captureStatus.setText("Captured " + currentCapture.getCaptureName());
                         playerCaptures[currentPlayerIdx].getChildren().add(formCapturesImage(currentCapture));
+                    }
+                    // take
+                    else{
+                        System.out.println("X");
+                        poolCards.add(playedCard);
+                        captureStatus.setText("Trailing");
                     }
 
                     // successful take, update score
@@ -380,6 +385,7 @@ public class Game extends Application{
                 }
             }
         }
+
 
         for(int i = 0; i < 4; i++){
             playerCaptureButton[i].setOnAction(new CaptureHandler());
