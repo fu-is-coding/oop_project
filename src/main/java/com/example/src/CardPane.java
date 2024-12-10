@@ -2,20 +2,21 @@ package com.example.src;
 import javafx.geometry.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 
 public class CardPane extends StackPane{
     private Player currentPlayer;
     private Card card;
-    private ImageView iv;
+    private Text iv;
     private boolean selected = false;
     private boolean active = true;
 
     public CardPane(int width){
-        iv = new ImageView();
-        iv.setFitWidth(width);
-        iv.setPreserveRatio(true);
+        iv = new Text();
+        // iv.setFitWidth(width);
+        // iv.setPreserveRatio(true);
         iv.setSmooth(true);
-        iv.setCache(true);
+        iv.setCache(true);  
 
         setMargin(iv, new Insets(3));
         getChildren().add(iv);
@@ -27,19 +28,20 @@ public class CardPane extends StackPane{
         setStyle("-fx-background-color: none");
 
         if(card == null){
-            iv.setImage(null);
+            iv.setText("");
             setOnMouseClicked(null);
         }
         else{
-            iv.setImage(card.getImage());
+            iv.setText(card.getImage());
+            currentPlayer = new Player();
 
             setOnMouseClicked(e ->{
                 // dont do anything if not active
                 if(!active)
                     return;
-
+                selected = !selected;
                 if(!selected){
-                    setStyle("-fx-background-color: blue");
+                    setStyle("-fx-background-color: red");
                     currentPlayer.addChoosenCard(card);
                 }
                 else{
@@ -47,7 +49,7 @@ public class CardPane extends StackPane{
                     currentPlayer.removeChoosenCard(card);
                 }
 
-                selected = !selected;
+                
             });
         }
     }
@@ -64,8 +66,8 @@ public class CardPane extends StackPane{
             return;
 
         if(!active)
-            iv.setImage(card.getBackImage());
+            iv.setText("Hidden");
         else
-            iv.setImage(card.getImage());
+            iv.setText(card.getRank() + card.getSuit());
     }
 }
